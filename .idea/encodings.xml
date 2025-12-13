@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/common-dto/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/common-dto/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/analytical-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/analytical-model/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/imaging-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/imaging-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/radiology-service/src/main/java" charset="UTF-8" />
