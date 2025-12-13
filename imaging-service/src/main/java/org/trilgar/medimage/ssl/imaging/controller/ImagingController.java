@@ -31,12 +31,12 @@ public class ImagingController {
     }
 
     @GetMapping(value = "/{id}/content", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getImageContent(@PathVariable UUID id) {
+    public byte[] getImageContent(@PathVariable("id") UUID id) {
         return imagingService.getImageData(id);
     }
 
     @GetMapping("/patient/{patientId}")
-    public List<ImageMetadata> getPatientImages(@PathVariable UUID patientId) {
+    public List<ImageMetadata> getPatientImages(@PathVariable("patientId") UUID patientId) {
         return imagingService.getImagesByPatient(patientId);
     }
 }

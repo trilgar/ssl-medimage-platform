@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.trilgar.medimage.ssl.patient.entity.Examination;
 import org.trilgar.medimage.ssl.patient.entity.Patient;
 import org.trilgar.medimage.ssl.patient.model.CreateExaminationRequest;
 import org.trilgar.medimage.ssl.patient.service.api.PatientService;
@@ -28,8 +29,8 @@ public class PatientRecordController {
         patient.setEmail(request.getEmail());
         patient.setDateOfBirth(request.getDob());
 
-        UUID examId = patientService.initiateExamination(patient, request.getModality(), request.getNotes(), request.getIsUrgent());
+        Examination examination = patientService.initiateExamination(patient, request.getModality(), request.getNotes(), request.getIsUrgent());
 
-        return ResponseEntity.ok("Examination created. ID: " + examId);
+        return ResponseEntity.ok("Examination created for patient: %s. ID: %s".formatted(examination.getPatient().getId(), examination.getId()));
     }
 }

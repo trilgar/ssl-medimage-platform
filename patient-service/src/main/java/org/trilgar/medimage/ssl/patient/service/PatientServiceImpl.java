@@ -34,7 +34,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Transactional
     @Override
-    public UUID initiateExamination(Patient patient, String modality, String notes, boolean isUrgent) {
+    public Examination initiateExamination(Patient patient, String modality, String notes, boolean isUrgent) {
         if (patient.getId() == null) {
             patient = patientRepository.save(patient);
         }
@@ -62,7 +62,7 @@ public class PatientServiceImpl implements PatientService {
         rabbitTemplate.convertAndSend("examination_requests_queue", request);
 
         log.info("Examination initiated for patient {}. Request ID: {}", patient.getFullName(), exam.getId());
-        return exam.getId();
+        return exam;
     }
 
     @Transactional
