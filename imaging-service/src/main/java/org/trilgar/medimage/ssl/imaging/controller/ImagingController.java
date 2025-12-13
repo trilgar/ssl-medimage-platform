@@ -2,6 +2,7 @@ package org.trilgar.medimage.ssl.imaging.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.trilgar.medimage.ssl.imaging.entity.ImageMetadata;
@@ -30,11 +31,13 @@ public class ImagingController {
         );
     }
 
+    @Transactional
     @GetMapping(value = "/{id}/content", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] getImageContent(@PathVariable("id") UUID id) {
         return imagingService.getImageData(id);
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/patient/{patientId}")
     public List<ImageMetadata> getPatientImages(@PathVariable("patientId") UUID patientId) {
         return imagingService.getImagesByPatient(patientId);

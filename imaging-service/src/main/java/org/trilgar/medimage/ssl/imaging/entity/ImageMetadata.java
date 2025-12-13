@@ -1,5 +1,6 @@
 package org.trilgar.medimage.ssl.imaging.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class ImageMetadata {
     @Column(name = "image_data", nullable = false)
     @Basic(fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private byte[] data;
 
     private String modality;
