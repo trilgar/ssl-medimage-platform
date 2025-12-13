@@ -14,6 +14,8 @@ public class RiskAssessmentResult {
     private UUID requestId;
     private UUID patientId;
 
+    private String s3ObjectKey;
+
     private double riskScore;
     private String diagnosisLabel;
     private boolean isCritical;
