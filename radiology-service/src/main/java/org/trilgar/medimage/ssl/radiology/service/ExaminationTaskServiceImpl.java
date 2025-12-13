@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.trilgar.medimage.ssl.PatientExaminationRequest;
+import org.trilgar.medimage.ssl.model.PatientExaminationRequest;
 import org.trilgar.medimage.ssl.radiology.entity.ExaminationTask;
 import org.trilgar.medimage.ssl.radiology.repository.ExaminationTaskRepository;
 import org.trilgar.medimage.ssl.radiology.service.api.ExaminationTaskService;

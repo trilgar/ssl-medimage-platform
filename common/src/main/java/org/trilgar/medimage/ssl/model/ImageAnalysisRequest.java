@@ -1,4 +1,4 @@
-package org.trilgar.medimage.ssl;
+package org.trilgar.medimage.ssl.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

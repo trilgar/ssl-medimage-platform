@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-import org.trilgar.medimage.ssl.ImageAnalysisRequest;
+import org.trilgar.medimage.ssl.model.ImageAnalysisRequest;
 import org.trilgar.medimage.ssl.radiology.config.RabbitConfig;
 import org.trilgar.medimage.ssl.radiology.entity.ExaminationTask;
 import org.trilgar.medimage.ssl.radiology.service.api.ExaminationTaskService;
 import org.trilgar.medimage.ssl.radiology.service.api.RadiologyService;
-import org.trilgar.medimage.ssl.radiology.service.api.S3StorageService;
+import org.trilgar.medimage.ssl.s3.api.S3StorageService;
 
 import java.util.UUID;
 

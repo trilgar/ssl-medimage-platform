@@ -1,6 +1,6 @@
 package org.trilgar.medimage.ssl.radiology.service.api;
 
-import org.trilgar.medimage.ssl.PatientExaminationRequest;
+import org.trilgar.medimage.ssl.model.PatientExaminationRequest;
 import org.trilgar.medimage.ssl.radiology.entity.ExaminationTask;
 
 import java.util.List;

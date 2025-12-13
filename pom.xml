@@ -10,9 +10,10 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>common-dto</module>
+        <module>common</module>
         <module>imaging-service</module>
         <module>radiology-service</module>
+        <module>analytical-model</module>
     </modules>
 
     <properties>
