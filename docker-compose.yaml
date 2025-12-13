@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: med_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: medimage_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - med-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: med_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - med-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:RELEASE.2024-01-18T22-51-28Z
+    container_name: med_minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    networks:
+      - med-network
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/localhost/9000" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio-create-bucket:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb myminio/med-staging;
+      /usr/bin/mc anonymous set public myminio/med-staging;
+      exit 0;
+      "
+    networks:
+      - med-network
+
+  # --- MICROSERVICES ---
+
+  imaging-service:
+    image: imaging-service:1.0-SNAPSHOT
+    container_name: med_imaging_service
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASS=password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - med-network
+
+  radiology-service:
+    image: radiology-service:1.0-SNAPSHOT
+    container_name: med_radiology_service
+    ports:
+      - "8081:8081"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASS=password
+      - S3_ENDPOINT=http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - med-network
+
+  analytical-model:
+    image: analytical-model:1.0-SNAPSHOT
+    container_name: med_analytical_model
+    ports:
+      - "8083:8083"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - S3_ENDPOINT=http://minio:9000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - med-network
+
+  patient-service:
+    image: patient-service:1.0-SNAPSHOT
+    container_name: med_patient_service
+    ports:
+      - "8080:8080"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASS=password
+      - S3_ENDPOINT=http://minio:9000
+      - IMAGING_URL=http://imaging-service:8082/api/images
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      imaging-service:
+        condition: service_started
+    networks:
+      - med-network
+
+networks:
+  med-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  minio_data:

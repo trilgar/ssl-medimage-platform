@@ -17,6 +17,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue analysisInputQueue() {
+        return new Queue(ANALYSIS_INPUT_QUEUE, true);
+    }
+
+    @Bean
     public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
