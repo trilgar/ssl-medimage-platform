@@ -12,6 +12,7 @@
     <modules>
         <module>common-dto</module>
         <module>imaging-service</module>
+        <module>radiology-service</module>
     </modules>
 
     <properties>
