@@ -76,6 +76,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Install Root Parent
+        run: mvn install -N -DskipTests
+
       - name: Install Common (Dependency)
         run: mvn install
         working-directory: ./common
@@ -112,6 +115,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: Install Root Parent
+        run: mvn install -N -DskipTests
 
       - name: Install Common
         run: mvn install
@@ -150,6 +156,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Install Root Parent
+        run: mvn install -N -DskipTests
+
       - name: Install Common
         run: mvn install
         working-directory: ./common
@@ -186,6 +195,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: Install Root Parent
+        run: mvn install -N -DskipTests
 
       - name: Install Common
         run: mvn install
