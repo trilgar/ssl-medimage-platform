@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: med-config
-  namespace: med-ns
+
 data:
   DB_HOST: "postgres-svc"
   DB_USER: "postgres"

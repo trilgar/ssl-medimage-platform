@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: med-ns
+
 spec:
   selector:
     matchLabels:
@@ -28,7 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: postgres
@@ -42,7 +42,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
-  namespace: med-ns
+
 spec:
   selector:
     matchLabels:
@@ -68,7 +68,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq-svc # RABBIT_HOST
-  namespace: med-ns
+
 spec:
   selector:
     app: rabbitmq
@@ -85,7 +85,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
-  namespace: med-ns
+
 spec:
   selector:
     matchLabels:
@@ -112,7 +112,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: minio-svc # S3_ENDPOINT
-  namespace: med-ns
+
 spec:
   selector:
     app: minio

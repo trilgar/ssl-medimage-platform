@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: patient-service
-  namespace: med-ns
+
 spec:
   replicas: 1
   selector:
@@ -28,7 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: patient-service-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: patient-service
@@ -42,7 +42,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: radiology-service
-  namespace: med-ns
+
 spec:
   replicas: 1
   selector:
@@ -67,7 +67,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: radiology-service-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: radiology-service
@@ -81,7 +81,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: imaging-service
-  namespace: med-ns
+
 spec:
   replicas: 1
   selector:
@@ -106,7 +106,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: imaging-service-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: imaging-service
@@ -120,7 +120,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: analytical-model
-  namespace: med-ns
+
 spec:
   replicas: 1
   selector:
@@ -145,7 +145,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: analytical-model-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: analytical-model
@@ -159,7 +159,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notification-service
-  namespace: med-ns
+
 spec:
   replicas: 1
   selector:
@@ -184,7 +184,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notification-service-svc
-  namespace: med-ns
+
 spec:
   selector:
     app: notification-service
