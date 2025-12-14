@@ -76,7 +76,7 @@ services:
   # --- MICROSERVICES ---
 
   imaging-service:
-    image: imaging-service:1.0-SNAPSHOT
+    image: medimage/imaging-service:latest
     container_name: med_imaging_service
     ports:
       - "8082:8082"
@@ -91,7 +91,7 @@ services:
       - med-network
 
   radiology-service:
-    image: radiology-service:1.0-SNAPSHOT
+    image: medimage/radiology-service:latest
     container_name: med_radiology_service
     ports:
       - "8081:8081"
@@ -112,7 +112,7 @@ services:
       - med-network
 
   analytical-model:
-    image: analytical-model:1.0-SNAPSHOT
+    image: medimage/analytical-model:latest
     container_name: med_analytical_model
     ports:
       - "8083:8083"
@@ -128,7 +128,7 @@ services:
       - med-network
 
   patient-service:
-    image: patient-service:1.0-SNAPSHOT
+    image: medimage/patient-service:latest
     container_name: med_patient_service
     ports:
       - "8080:8080"
@@ -148,6 +148,20 @@ services:
         condition: service_healthy
       imaging-service:
         condition: service_started
+    networks:
+      - med-network
+  notification-service:
+    image: medimage/notification-service:latest
+    container_name: med_notification_service
+    ports:
+      - "8084:8084"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=user
+      - RABBIT_PASS=password
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - med-network
 

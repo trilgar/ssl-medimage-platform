@@ -5,9 +5,9 @@ spring:
   application:
     name: imaging-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/medimage_db
-    username: postgres
-    password: password
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/medimage_db
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:password}
   jpa:
     hibernate:
       ddl-auto: update
