@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.trilgar.medimage.ssl.patient.client.ImagingServiceClient;
 import org.trilgar.medimage.ssl.patient.repository.ExaminationRepository;
 import org.trilgar.medimage.ssl.patient.repository.PatientRepository;
+import org.trilgar.medimage.ssl.patient.service.api.NotificationSender;
 import org.trilgar.medimage.ssl.patient.service.api.PatientService;
 import org.trilgar.medimage.ssl.s3.api.S3StorageService;
 
@@ -31,6 +32,7 @@ public class PatientServiceImpl implements PatientService {
 
     private final S3StorageService s3Service;
     private final ImagingServiceClient imagingClient;
+    private final NotificationSender<RiskAssessmentResult> notificationSender;
 
     @Transactional
     @Override
@@ -93,8 +95,6 @@ public class PatientServiceImpl implements PatientService {
         examinationRepository.save(exam);
         log.info("Examination {} completed and archived.", exam.getId());
 
-        if (result.isCritical()) {
-            log.warn("CRITICAL RESULT! Notification should be sent to doctor.");
-        }
+        notificationSender.sendCompletionNotification(result);
     }
 }
