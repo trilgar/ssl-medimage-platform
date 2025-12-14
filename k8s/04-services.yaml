@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: patient-service
-          image: medimage/patient-service:latest
-          imagePullPolicy: Never
+          image: trilgar/med-patient-service:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: med-config
@@ -55,8 +55,8 @@ spec:
     spec:
       containers:
         - name: radiology-service
-          image: medimage/radiology-service:latest
-          imagePullPolicy: Never
+          image: trilgar/med-radiology-service:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: med-config
@@ -94,8 +94,8 @@ spec:
     spec:
       containers:
         - name: imaging-service
-          image: medimage/imaging-service:latest
-          imagePullPolicy: Never
+          image: trilgar/med-imaging-service:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: med-config
@@ -133,8 +133,8 @@ spec:
     spec:
       containers:
         - name: analytical-model
-          image: medimage/analytical-model:latest
-          imagePullPolicy: Never
+          image: trilgar/med-analytical-model:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: med-config
@@ -172,8 +172,8 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: medimage/notification-service:latest
-          imagePullPolicy: Never
+          image: trilgar/med-notification-service:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: med-config
