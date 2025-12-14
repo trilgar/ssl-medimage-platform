@@ -1,0 +1,193 @@
+# --- 1. PATIENT SERVICE ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-service
+  namespace: med-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-service
+  template:
+    metadata:
+      labels:
+        app: patient-service
+    spec:
+      containers:
+        - name: patient-service
+          image: medimage/patient-service:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: med-config
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient-service-svc
+  namespace: med-ns
+spec:
+  selector:
+    app: patient-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+# --- 2. RADIOLOGY SERVICE ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radiology-service
+  namespace: med-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radiology-service
+  template:
+    metadata:
+      labels:
+        app: radiology-service
+    spec:
+      containers:
+        - name: radiology-service
+          image: medimage/radiology-service:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: med-config
+          ports:
+            - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radiology-service-svc
+  namespace: med-ns
+spec:
+  selector:
+    app: radiology-service
+  ports:
+    - port: 8081
+      targetPort: 8081
+
+# --- 3. IMAGING SERVICE ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imaging-service
+  namespace: med-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: imaging-service
+  template:
+    metadata:
+      labels:
+        app: imaging-service
+    spec:
+      containers:
+        - name: imaging-service
+          image: medimage/imaging-service:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: med-config
+          ports:
+            - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: imaging-service-svc
+  namespace: med-ns
+spec:
+  selector:
+    app: imaging-service
+  ports:
+    - port: 8082
+      targetPort: 8082
+
+# --- 4. ANALYTICAL MODEL ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytical-model
+  namespace: med-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytical-model
+  template:
+    metadata:
+      labels:
+        app: analytical-model
+    spec:
+      containers:
+        - name: analytical-model
+          image: medimage/analytical-model:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: med-config
+          ports:
+            - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytical-model-svc
+  namespace: med-ns
+spec:
+  selector:
+    app: analytical-model
+  ports:
+    - port: 8083
+      targetPort: 8083
+
+# --- 5. NOTIFICATION SERVICE ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: med-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: medimage/notification-service:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: med-config
+          ports:
+            - containerPort: 8084
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service-svc
+  namespace: med-ns
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - port: 8084
+      targetPort: 8084
