@@ -1,0 +1,249 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      patient: ${{ steps.filter.outputs.patient }}
+      imaging: ${{ steps.filter.outputs.imaging }}
+      radiology: ${{ steps.filter.outputs.radiology }}
+      notification: ${{ steps.filter.outputs.notification }}
+      analytical: ${{ steps.filter.outputs.analytical }}
+      common: ${{ steps.filter.outputs.common }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            patient:
+              - 'patient-service/**'
+            imaging:
+              - 'imaging-service/**'
+            radiology:
+              - 'radiology-service/**'
+            notification:
+              - 'notification-service/**'
+            analytical:
+              - 'analytical-model/**'
+            common:
+              - 'common/**'
+
+  # --- 2. (COMMON) ---
+  build-common:
+    needs: changes
+    if: |
+      needs.changes.outputs.common == 'true' ||
+      needs.changes.outputs.patient == 'true' ||
+      needs.changes.outputs.imaging == 'true' ||
+      needs.changes.outputs.radiology == 'true' ||
+      needs.changes.outputs.notification == 'true' ||
+      needs.changes.outputs.analytical == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common Library
+        run: mvn clean install
+        working-directory: ./common
+
+  # --- 3. Services build ---
+
+  # === PATIENT SERVICE ===
+  build-patient:
+    needs: [changes, build-common]
+    if: ${{ needs.changes.outputs.patient == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common (Dependency)
+        run: mvn install
+        working-directory: ./common
+
+      - name: Build Patient Service
+        run: mvn clean package
+        working-directory: ./patient-service
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./patient-service
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/med-patient-service:latest
+            ${{ env.DOCKER_USERNAME }}/med-patient-service:${{ github.sha }}
+
+  # === IMAGING SERVICE ===
+  build-imaging:
+    needs: [changes, build-common]
+    if: ${{ needs.changes.outputs.imaging == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common
+        run: mvn install
+        working-directory: ./common
+
+      - name: Build Imaging Service
+        run: mvn clean package
+        working-directory: ./imaging-service
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./imaging-service
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/med-imaging-service:latest
+            ${{ env.DOCKER_USERNAME }}/med-imaging-service:${{ github.sha }}
+
+  # === RADIOLOGY SERVICE ===
+  build-radiology:
+    needs: [changes, build-common]
+    if: ${{ needs.changes.outputs.radiology == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common
+        run: mvn install
+        working-directory: ./common
+
+      - name: Build Radiology Service
+        run: mvn clean package
+        working-directory: ./radiology-service
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./radiology-service
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/med-radiology-service:latest
+            ${{ env.DOCKER_USERNAME }}/med-radiology-service:${{ github.sha }}
+
+  # === NOTIFICATION SERVICE ===
+  build-notification:
+    needs: [changes, build-common]
+    if: ${{ needs.changes.outputs.notification == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common
+        run: mvn install
+        working-directory: ./common
+
+      - name: Build Notification Service
+        run: mvn clean package
+        working-directory: ./notification-service
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./notification-service
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/med-notification-service:latest
+            ${{ env.DOCKER_USERNAME }}/med-notification-service:${{ github.sha }}
+
+  # === ANALYTICAL MODEL ===
+  build-analytical:
+    needs: [changes, build-common]
+    if: ${{ needs.changes.outputs.analytical == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install Common
+        run: mvn install
+        working-directory: ./common
+
+      - name: Build Analytical Model
+        run: mvn clean package
+        working-directory: ./analytical-model
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./analytical-model
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/med-analytical-model:latest
+            ${{ env.DOCKER_USERNAME }}/med-analytical-model:${{ github.sha }}
