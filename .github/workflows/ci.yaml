@@ -224,6 +224,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Install Root Parent
+        run: mvn install -N -DskipTests
+
       - name: Install Common
         run: mvn install
         working-directory: ./common
